@@ -1,4 +1,4 @@
-project "glfw3"
+project "glfw"
 	flags "NoPCH"
 	kind "StaticLib"
 	language "C"
@@ -92,7 +92,7 @@ project "glfw3"
 			"src/win32_monitor.c",
 			"src/win32_time.h",
 			"src/win32_time.c",
-			"src/win32_platform.c",
+			"src/win32_platform.h",
 			"src/win32_thread.h",
 			"src/win32_thread.c",
 			"src/win32_window.c",
