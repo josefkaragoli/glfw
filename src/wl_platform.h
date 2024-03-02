@@ -1,5 +1,5 @@
 //========================================================================
-// GLFW 3.4 Wayland - www.glfw.org
+// GLFW 3.5 Wayland - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2014 Jonas Ådahl <jadahl@gmail.com>
 //
@@ -131,6 +131,8 @@ struct wl_output;
 #define xdg_wm_base_interface _glfw_xdg_wm_base_interface
 #define xdg_activation_v1_interface _glfw_xdg_activation_v1_interface
 #define xdg_activation_token_v1_interface _glfw_xdg_activation_token_v1_interface
+#define wl_surface_interface _glfw_wl_surface_interface
+#define wp_fractional_scale_v1_interface _glfw_wp_fractional_scale_v1_interface
 
 #define GLFW_WAYLAND_WINDOW_STATE         _GLFWwindowWayland  wl;
 #define GLFW_WAYLAND_LIBRARY_WINDOW_STATE _GLFWlibraryWayland wl;
@@ -355,6 +357,7 @@ typedef struct _GLFWwindowWayland
     GLFWbool                    fullscreen;
     GLFWbool                    hovered;
     GLFWbool                    transparent;
+    GLFWbool                    scaleFramebuffer;
     struct wl_surface*          surface;
     struct wl_callback*         callback;
 
@@ -384,7 +387,6 @@ typedef struct _GLFWwindowWayland
     _GLFWcursor*                currentCursor;
     double                      cursorPosX, cursorPosY;
 
-    char*                       title;
     char*                       appId;
 
     // We need to track the monitors the window spans on to calculate the
@@ -393,6 +395,10 @@ typedef struct _GLFWwindowWayland
     _GLFWscaleWayland*          outputScales;
     size_t                      outputScaleCount;
     size_t                      outputScaleSize;
+
+    struct wp_viewport*             scalingViewport;
+    uint32_t                        scalingNumerator;
+    struct wp_fractional_scale_v1*  fractionalScale;
 
     struct zwp_relative_pointer_v1* relativePointer;
     struct zwp_locked_pointer_v1*   lockedPointer;
@@ -430,6 +436,7 @@ typedef struct _GLFWlibraryWayland
     struct zwp_pointer_constraints_v1*      pointerConstraints;
     struct zwp_idle_inhibit_manager_v1*     idleInhibitManager;
     struct xdg_activation_v1*               activationManager;
+    struct wp_fractional_scale_manager_v1*  fractionalScaleManager;
 
     _GLFWofferWayland*          offers;
     unsigned int                offerCount;
@@ -672,7 +679,7 @@ void _glfwGetMonitorPosWayland(_GLFWmonitor* monitor, int* xpos, int* ypos);
 void _glfwGetMonitorContentScaleWayland(_GLFWmonitor* monitor, float* xscale, float* yscale);
 void _glfwGetMonitorWorkareaWayland(_GLFWmonitor* monitor, int* xpos, int* ypos, int* width, int* height);
 GLFWvidmode* _glfwGetVideoModesWayland(_GLFWmonitor* monitor, int* count);
-void _glfwGetVideoModeWayland(_GLFWmonitor* monitor, GLFWvidmode* mode);
+GLFWbool _glfwGetVideoModeWayland(_GLFWmonitor* monitor, GLFWvidmode* mode);
 GLFWbool _glfwGetGammaRampWayland(_GLFWmonitor* monitor, GLFWgammaramp* ramp);
 void _glfwSetGammaRampWayland(_GLFWmonitor* monitor, const GLFWgammaramp* ramp);
 
